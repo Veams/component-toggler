@@ -2,7 +2,7 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v3.0.2
+ * @version v3.0.3
  *
  * @author Andy Gutsche
  */
@@ -51,7 +51,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '3.0.2',
+			version: '3.0.3',
 			vc: true,
 			mod: false // set to true if source was modified in project
 		};
@@ -185,7 +185,8 @@ class Toggler extends VeamsComponent {
 	 * @param {Number} [height] - height
 	 */
 	setHeight(height) {
-		this.$el.css('height', typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
+		this.$el.css('height',
+			typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
 	}
 
 
@@ -269,36 +270,36 @@ class Toggler extends VeamsComponent {
 	 * @param {String} [obj.options.setFocus] - element to set focus on open
 	 */
 	open(obj) {
-		// this.calculateHeight().then(() => {
-			this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
-				.attr('aria-hidden', false)
-				.removeClass(this.options.closeClass)
-				.addClass(this.options.openClass);
+		this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
+			.attr('aria-hidden', false)
+			.removeClass(this.options.closeClass)
+			.addClass(this.options.openClass);
 
-			if (obj && obj.focusEl) {
+		if (obj && obj.focusEl) {
 
-				this.$el.one(Helpers.transitionEndEvent(), () => {
-					obj.focusEl.focus();
-				});
-			}
-
-			Veams.Vent.trigger(Veams.EVENTS.toggler.open, {
-				context: this.options.context
+			this.$el.on(Helpers.transitionEndEvent(), () => {
+				obj.focusEl.focus();
+				this.$el.off(Helpers.transitionEndEvent());
 			});
+		}
 
-			if (this.options.setOverflow) {
+		Veams.Vent.trigger(Veams.EVENTS.toggler.open, {
+			context: this.options.context
+		});
 
-				this.$el.one(Helpers.transitionEndEvent(), () => {
-					this.$el.css('overflow', 'visible');
-				});
-			}
+		if (this.options.setOverflow) {
 
-			if (this.options.toggleTabindexElems) {
-				$(this.options.toggleTabindexElems, this.el).attr('tabindex', 0);
-			}
+			this.$el.on(Helpers.transitionEndEvent(), () => {
+				this.$el.css('overflow', 'visible');
+				this.$el.off(Helpers.transitionEndEvent());
+			});
+		}
 
-			this.isOpen = true;
-		// });
+		if (this.options.toggleTabindexElems) {
+			$(this.options.toggleTabindexElems, this.el).attr('tabindex', 0);
+		}
+
+		this.isOpen = true;
 	}
 
 

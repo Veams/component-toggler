@@ -1,3 +1,6 @@
+### v3.0.3
+- Avoid use of .one() to be compatible with VeamsQuery
+
 ### v3.0.2
 - Fix height animation 
 
