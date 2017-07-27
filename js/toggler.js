@@ -2,7 +2,7 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v3.0.1
+ * @version v3.0.2
  *
  * @author Andy Gutsche
  */
@@ -51,7 +51,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '3.0.1',
+			version: '3.0.2',
 			vc: true,
 			mod: false // set to true if source was modified in project
 		};
@@ -103,7 +103,12 @@ class Toggler extends VeamsComponent {
 
 		this.isOpen = this.$el.hasClass(this.options.openClass);
 
-		this.calculateHeight();
+		this.calculateHeight().then(() => {
+
+			if (!this.isOpen) {
+				this.setHeight(0);
+			}
+		});
 	}
 
 
@@ -127,12 +132,16 @@ class Toggler extends VeamsComponent {
 	 *
 	 */
 	onResize() {
-		Veams.Vent.trigger(this.options.globalEvent, {
-			forceClose: true
-		});
 
-		this.close();
+		// give browser some tie to recalculate
+		setTimeout(() => {
+
+			this.calculateHeight().then(() => {
+				this.setHeight();
+			});
+		}, 200);
 	}
+
 
 	/**
 	 * Enable calc mode.
@@ -164,18 +173,19 @@ class Toggler extends VeamsComponent {
 			this.$el.removeClass(this.options.openClass);
 		}
 		else {
-			this.updateHeight();
+			this.setHeight();
 		}
 	}
 
 
 	/**
-	 * Update height of current view element to latest calculated value.
+	 * Set height of current view element to given value or latest calculated value.
 	 *
 	 * @private
+	 * @param {Number} [height] - height
 	 */
-	updateHeight() {
-		this.$el.css('height', this.$el.attr('data-js-height'));
+	setHeight(height) {
+		this.$el.css('height', typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
 	}
 
 
@@ -259,9 +269,9 @@ class Toggler extends VeamsComponent {
 	 * @param {String} [obj.options.setFocus] - element to set focus on open
 	 */
 	open(obj) {
-		this.calculateHeight().then(() => {
-			this.$el.css('height', this.$el.attr('data-js-height'))
-				.attr('aria-hidden', 'false')
+		// this.calculateHeight().then(() => {
+			this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
+				.attr('aria-hidden', false)
 				.removeClass(this.options.closeClass)
 				.addClass(this.options.openClass);
 
@@ -288,7 +298,7 @@ class Toggler extends VeamsComponent {
 			}
 
 			this.isOpen = true;
-		});
+		// });
 	}
 
 

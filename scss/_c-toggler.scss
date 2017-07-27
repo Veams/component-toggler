@@ -12,19 +12,15 @@ $toggler-animation-easing-std: ease-in-out;
 Global Styles
 --------------------------------------------------- */
 [data-css="c-toggler"] {
+	height: 0;
+	opacity: 0;
+	visibility: hidden;
+	overflow: hidden;
 	transition: opacity $toggler-animation-duration-std $toggler-animation-easing-std, height $toggler-animation-duration-std $toggler-animation-easing-std, visibility 0ms linear $toggler-animation-duration-std;
-
-	&.is-closed {
-		height: 0;
-		opacity: 0;
-		visibility: hidden;
-		overflow: hidden;
-	}
 
 	&.is-open {
 		opacity: 1;
 		visibility: visible;
-		overflow: visible;
 		z-index: 1;
 		transition: opacity $toggler-animation-duration-std $toggler-animation-easing-std, height $toggler-animation-duration-std $toggler-animation-easing-std, visibility 0ms linear;
 	}
