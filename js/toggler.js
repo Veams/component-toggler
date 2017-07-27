@@ -2,7 +2,7 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v3.0.0
+ * @version v3.0.1
  *
  * @author Andy Gutsche
  */
@@ -51,7 +51,9 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '3.0.0'
+			version: '3.0.1',
+			vc: true,
+			mod: false // set to true if source was modified in project
 		};
 	}
 
