@@ -11,10 +11,9 @@
 ```
 
 ### Include: SCSS
-
 ``` scss
 // @INSERT :: START @tag: scss-self-contained-import //
-@import "../templating/partials/components/toggler/scss/_c-toggler";
+@import "../components/toggler/scss/_c-toggler";
 // @INSERT :: END
 ```
 
@@ -23,7 +22,7 @@
 #### Import
 ``` js
 // @INSERT :: START @tag: js-self-contained-import //
-import Toggler from '../templating/partials/components/toggler/js/toggler';
+import Toggler from '../components/toggler/js/toggler';
 // @INSERT :: END
 ```
 
@@ -36,17 +35,5 @@ import Toggler from '../templating/partials/components/toggler/js/toggler';
 		domName: 'toggler',
 		module: Toggler,
 	}
-// @INSERT :: END
-```
-
-#### Custom Events
-``` js
-// @INSERT :: START @tag: js-events //
-/**
- * Events for Toggler
- */
-EVENTS.toggler = {
-	eventName: 'toggler:eventName'
-};
 // @INSERT :: END
 ```
