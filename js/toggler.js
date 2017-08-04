@@ -2,7 +2,7 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v4.0.0
+ * @version v4.0.1
  *
  * @author Andy Gutsche
  */
@@ -51,7 +51,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '4.0.0',
+			version: '4.0.1',
 			vc: true,
 			mod: false // set to true if source was modified in project
 		};
@@ -137,7 +137,10 @@ class Toggler extends VeamsComponent {
 		setTimeout(() => {
 
 			this.calculateHeight().then(() => {
-				this.setHeight();
+
+				if (this.isOpen) {
+					this.setHeight();
+				}
 			});
 		}, 200);
 	}
@@ -186,7 +189,7 @@ class Toggler extends VeamsComponent {
 	 */
 	setHeight(height) {
 		this.$el.css('height',
-			typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
+				typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
 	}
 
 
@@ -271,9 +274,9 @@ class Toggler extends VeamsComponent {
 	 */
 	open(obj) {
 		this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
-			.attr('aria-hidden', false)
-			.removeClass(this.options.closeClass)
-			.addClass(this.options.openClass);
+				.attr('aria-hidden', false)
+				.removeClass(this.options.closeClass)
+				.addClass(this.options.openClass);
 
 		if (obj && obj.focusEl) {
 
@@ -310,10 +313,10 @@ class Toggler extends VeamsComponent {
 	 */
 	close() {
 		this.$el.css('height', 0)
-			.removeAttr('style')
-			.attr('aria-hidden', 'true')
-			.removeClass(this.options.openClass)
-			.addClass(this.options.closeClass);
+				.removeAttr('style')
+				.attr('aria-hidden', 'true')
+				.removeClass(this.options.openClass)
+				.addClass(this.options.closeClass);
 
 		if (this.options.setOverflow) {
 			this.$el.css('overflow', 'hidden');
