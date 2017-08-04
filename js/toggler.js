@@ -133,7 +133,7 @@ class Toggler extends VeamsComponent {
 	 */
 	onResize() {
 
-		// give browser some tie to recalculate
+		// give browser some time to recalculate
 		setTimeout(() => {
 
 			this.calculateHeight().then(() => {
