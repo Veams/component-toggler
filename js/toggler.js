@@ -2,7 +2,7 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v4.0.1
+ * @version v4.0.2
  *
  * @author Andy Gutsche
  */
@@ -51,9 +51,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '4.0.1',
-			vc: true,
-			mod: false // set to true if source was modified in project
+			version: '4.0.2'
 		};
 	}
 
@@ -85,7 +83,7 @@ class Toggler extends VeamsComponent {
 	get subscribe() {
 
 		return {
-			'{{Veams.EVENTS.resize}}': 'onResize'
+			'{{Veams.EVENTS.resize}}': 'updateHeight'
 		};
 	}
 
@@ -123,18 +121,31 @@ class Toggler extends VeamsComponent {
 		if (this.options.globalEvent) {
 			this.registerEvent('{{this.options.globalEvent}}', 'toggle', true);
 		}
+
+		// Listen for addition/removal of child nodes amd update toggler height
+		let observer = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+
+				if (mutation.type === 'childList') {
+					this.updateHeight();
+				}
+			});
+		});
+
+		observer.observe(this.el, {childList: true});
 	}
 
+
 	/**
-	 * handle on resize event
-	 *
-	 * close the toggler
+	 * Update toggler height
 	 *
 	 */
-	onResize() {
+	updateHeight() {
+
+		clearTimeout(this.updateHeightTimeout);
 
 		// give browser some time to recalculate
-		setTimeout(() => {
+		this.updateHeightTimeout = setTimeout(() => {
 
 			this.calculateHeight().then(() => {
 
@@ -189,7 +200,7 @@ class Toggler extends VeamsComponent {
 	 */
 	setHeight(height) {
 		this.$el.css('height',
-				typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
+			typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
 	}
 
 
@@ -200,7 +211,9 @@ class Toggler extends VeamsComponent {
 	 */
 	calcHeight() {
 		return new Promise((resolve, reject) => {
-			setTimeout(() => {
+			clearTimeout(this.calcHeightTimeout);
+
+			this.calcHeightTimeout = setTimeout(() => {
 				let wantedHeight = this.$el.outerHeight();
 
 				this.$el.attr(this.options.dataMaxAttr, wantedHeight);
@@ -274,9 +287,9 @@ class Toggler extends VeamsComponent {
 	 */
 	open(obj) {
 		this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
-				.attr('aria-hidden', false)
-				.removeClass(this.options.closeClass)
-				.addClass(this.options.openClass);
+			.attr('aria-hidden', false)
+			.removeClass(this.options.closeClass)
+			.addClass(this.options.openClass);
 
 		if (obj && obj.focusEl) {
 
@@ -313,10 +326,10 @@ class Toggler extends VeamsComponent {
 	 */
 	close() {
 		this.$el.css('height', 0)
-				.removeAttr('style')
-				.attr('aria-hidden', 'true')
-				.removeClass(this.options.openClass)
-				.addClass(this.options.closeClass);
+			.removeAttr('style')
+			.attr('aria-hidden', 'true')
+			.removeClass(this.options.openClass)
+			.addClass(this.options.closeClass);
 
 		if (this.options.setOverflow) {
 			this.$el.css('overflow', 'hidden');

@@ -1,4 +1,9 @@
-# toggler
+<p align="right">
+    <a href="https://badge.fury.io/js/veams-component-toggler"><img src="https://badge.fury.io/js/veams-component-toggler.svg" alt="npm version" height="18"></a>
+    <a href="https://gitter.im/Sebastian-Fitzner/Veams?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge"><img src="https://badges.gitter.im/Sebastian-Fitzner/Veams.svg" alt="Gitter Chat" /></a>
+</p>
+
+# Toggler
 
  Represents a simple toggler with global event binding.
 
@@ -14,10 +19,6 @@
 ### Installation with Veams
 
 `veams install vc toggler`
-
-### Installation with Bower
-
-`bower install veams-component-toggler --save`
 
 -------------
 

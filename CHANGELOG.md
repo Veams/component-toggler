@@ -1,3 +1,6 @@
+### v4.0.2
+- Use mutation observer to track addition/removal of DOM elements and trigger update height
+
 ### v4.0.1
 - Fix resize bug
 
