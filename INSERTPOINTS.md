@@ -1,3 +1,5 @@
+## Usage
+
 ### Include: Page
 
 ``` hbs
@@ -10,23 +12,10 @@
 {{! @INSERT :: END }}
 ```
 
-### Include: SCSS
-``` scss
-// @INSERT :: START @tag: scss-self-contained-import //
-@import "../components/toggler/scss/_c-toggler";
-// @INSERT :: END
-```
-
 ### Include: JavaScript
 
-#### Import
-``` js
-// @INSERT :: START @tag: js-self-contained-import //
-import Toggler from '../components/toggler/js/toggler';
-// @INSERT :: END
-```
-
 #### Initializing in Veams V5
+
 ``` js
 // @INSERT :: START @tag: js-init-v5 //
 	,
