@@ -1,6 +1,6 @@
 {
 	"name": "veams-component-toggler",
-	"version": "5.0.0",
+	"version": "5.1.0",
 	"description": "Represents a simple toggler with global event binding.",
 	"repository": {
 		"type": "git",

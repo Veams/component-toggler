@@ -5,7 +5,7 @@
 ``` hbs
 {{! @INSERT :: START @id: toggler, @tag: component-partial }}
 {{#with toggler-bp}}
-	{{#wrapWith "c-toggler"}}
+	{{#wrapWith "toggler"}}
 		Wrapped with markup from toggler.
 	{{/wrapWith}}
 {{/with}}
@@ -18,11 +18,7 @@
 
 ``` js
 // @INSERT :: START @tag: js-init-v5 //
-	,
-	// Init Toggler //
-	{
-		domName: 'toggler',
-		module: Toggler,
-	}
+	// Init Toggler
+    Veams.modules.add({ namespace: 'toggler', module: Toggler });
 // @INSERT :: END
 ```

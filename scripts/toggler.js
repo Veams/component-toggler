@@ -2,18 +2,17 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v5.0.0
+ * @version v5.1.0
  *
  * @author Andy Gutsche
  */
 
 // Global dependencies
-import {Veams} from 'app';
-
-import VeamsComponent from 'veams/src/js/common/component';
+import { Veams } from 'app.veams';
+import VeamsComponent from 'veams/lib/common/component';
+import transitionEndEvent from 'veams-helpers/lib/detection/transitionEndEvent';
 
 const $ = Veams.$;
-const Helpers = Veams.helpers;
 
 class Toggler extends VeamsComponent {
 
@@ -51,7 +50,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '5.0.0',
+			version: '5.1.0',
 			vc: true,
 			mod: false
 		};
@@ -295,9 +294,9 @@ class Toggler extends VeamsComponent {
 
 		if (obj && obj.focusEl) {
 
-			this.$el.on(Helpers.transitionEndEvent(), () => {
+			this.$el.on(transitionEndEvent(), () => {
 				obj.focusEl.focus();
-				this.$el.off(Helpers.transitionEndEvent());
+				this.$el.off(transitionEndEvent());
 			});
 		}
 
@@ -307,9 +306,9 @@ class Toggler extends VeamsComponent {
 
 		if (this.options.setOverflow) {
 
-			this.$el.on(Helpers.transitionEndEvent(), () => {
+			this.$el.on(transitionEndEvent(), () => {
 				this.$el.css('overflow', 'visible');
-				this.$el.off(Helpers.transitionEndEvent());
+				this.$el.off(transitionEndEvent());
 			});
 		}
 
