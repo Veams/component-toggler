@@ -2,20 +2,22 @@
  * Represents a simple toggler with global event binding.
  *
  * @module Toggler
- * @version v5.1.0
+ * @version v1.0.0
  *
  * @author Andy Gutsche
  */
 
 // Global dependencies
-import { Veams } from 'app.veams';
-import VeamsComponent from 'veams/lib/common/component';
-import transitionEndEvent from 'veams-helpers/lib/detection/transitionEndEvent';
+import $ from '@veams/query';
+import Component from '@veams/component';
+import transitionEndEvent from '@veams/helpers/lib/detection/transition-end-event';
 
-const $ = Veams.$;
-
-class Toggler extends VeamsComponent {
-
+class Toggler extends Component {
+	/**
+	 * Generic Props
+	 */
+	$el = $(this.el);
+	savedStyles = this.$el.attr('style');
 
 	/**
 	 * Constructor for our class
@@ -50,7 +52,7 @@ class Toggler extends VeamsComponent {
 	 */
 	static get info() {
 		return {
-			version: '5.1.0',
+			version: '1.0.0',
 			vc: true,
 			mod: false
 		};
@@ -84,7 +86,7 @@ class Toggler extends VeamsComponent {
 	get subscribe() {
 
 		return {
-			'{{Veams.EVENTS.resize}}': 'updateHeight'
+			'{{this.context.EVENTS.resize}}': 'updateHeight'
 		};
 	}
 
@@ -93,21 +95,16 @@ class Toggler extends VeamsComponent {
 	 * Initialize the view and merge options
 	 *
 	 */
-	initialize() {
+	didMount() {
 		let selfInit = this.$el.attr('data-js-module') && this.$el.attr('data-js-module').indexOf('toggler') > -1;
 
 		if (selfInit && !this.options.globalEvent) {
-			console.info('Toggler: this.options.globalEvent not set.');
+			console.info('@veams/component-toggler :: this.options.globalEvent not set.');
 		}
 
 		this.isOpen = this.$el.hasClass(this.options.openClass);
 
-		this.calculateHeight().then(() => {
-
-			if (!this.isOpen) {
-				this.setHeight(0);
-			}
-		});
+		this.calculateHeight().then(() => !this.isOpen && this.setHeight(0));
 	}
 
 
@@ -117,14 +114,8 @@ class Toggler extends VeamsComponent {
 	 * Listen to open and close events
 	 */
 	bindEvents() {
-
-		// Global events
-		if (this.options.globalEvent) {
-			this.registerEvent('{{this.options.globalEvent}}', 'toggle', true);
-		}
-
 		// Listen for addition/removal of child nodes amd update toggler height
-		let observer = new MutationObserver((mutations) => {
+		const observer = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 
 				if (mutation.type === 'childList') {
@@ -133,7 +124,12 @@ class Toggler extends VeamsComponent {
 			});
 		});
 
-		observer.observe(this.el, {childList: true});
+		observer.observe(this.el, { childList: true });
+
+		// Global events
+		if (this.options.globalEvent) {
+			this.registerEvent('{{this.options.globalEvent}}', 'toggle', true);
+		}
 	}
 
 
@@ -142,18 +138,11 @@ class Toggler extends VeamsComponent {
 	 *
 	 */
 	updateHeight() {
-
 		clearTimeout(this.updateHeightTimeout);
 
 		// give browser some time to recalculate
 		this.updateHeightTimeout = setTimeout(() => {
-
-			this.calculateHeight().then(() => {
-
-				if (this.isOpen) {
-					this.setHeight();
-				}
-			});
+			this.calculateHeight().then(() => this.isOpen && this.setHeight());
 		}, 200);
 	}
 
@@ -164,7 +153,6 @@ class Toggler extends VeamsComponent {
 	 * @private
 	 */
 	enableCalcMode() {
-
 		if (!this.isOpen) {
 			this.$el.addClass(this.options.openClass);
 			this.$el.removeClass(this.options.closeClass);
@@ -173,25 +161,21 @@ class Toggler extends VeamsComponent {
 		this.$el.addClass(this.options.calculatingClass);
 	}
 
-
 	/**
 	 * Disable calc mode.
 	 *
 	 * @private
 	 */
 	disableCalcMode() {
-
 		this.$el.removeClass(this.options.calculatingClass);
 
 		if (!this.isOpen) {
 			this.$el.addClass(this.options.closeClass);
 			this.$el.removeClass(this.options.openClass);
-		}
-		else {
+		} else {
 			this.setHeight();
 		}
 	}
-
 
 	/**
 	 * Set height of current view element to given value or latest calculated value.
@@ -201,7 +185,7 @@ class Toggler extends VeamsComponent {
 	 */
 	setHeight(height) {
 		this.$el.css('height',
-			typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
+				typeof height === 'number' ? height + 'px' : this.$el.attr(this.options.dataMaxAttr) + 'px');
 	}
 
 
@@ -235,7 +219,6 @@ class Toggler extends VeamsComponent {
 		this.savedStyles = this.$el.attr('style');
 	}
 
-
 	/**
 	 * Restore all styles from current view element
 	 *
@@ -243,9 +226,8 @@ class Toggler extends VeamsComponent {
 	 */
 	restoreStyles() {
 		this.$el.attr('style', this.savedStyles);
-		delete this.savedStyles;
+		this.savedStyles = null;
 	}
-
 
 	/**
 	 * Toggles content
@@ -253,25 +235,23 @@ class Toggler extends VeamsComponent {
 	 * @public
 	 *
 	 * @param {Object} obj - the event data
-	 * @param {Boolean} obj.isActive - indicates if panel should open or close itself
-	 * @param {String} obj.options.setFocus - element to set focus on open
+	 * @param {String} [obj.globalEventId] - global event Id
+	 * @param {Node} [obj.focusEl = null] - Element which you want to focus
 	 */
-	toggle(obj) {
+	toggle({ globalEventId, focusEl = null }) {
 
 		// if globalEventId is set on both (cta and toggler)
-		if (this.options.globalEventId && obj.options && obj.options.globalEventId) {
+		if (this.options.globalEventId && globalEventId) {
 
 			// stop here if global event id don't match
-			if (this.options.globalEventId !== obj.options.globalEventId) {
+			if (this.options.globalEventId !== globalEventId) {
 				return;
 			}
 		}
 
-
-		if (obj.isActive) {
-			this.open(obj);
-		}
-		else {
+		if (!this.isOpen) {
+			this.open(focusEl);
+		} else {
 			this.close();
 		}
 	}
@@ -282,30 +262,22 @@ class Toggler extends VeamsComponent {
 	 *
 	 * @public
 	 *
-	 * @param {Object} [obj] - the event object
-	 * @param {Boolean} [obj.isActive] - indicates if panel should open or close itself
-	 * @param {String} [obj.options.setFocus] - element to set focus on open
+	 * @param {Object} [focusEl] - the event object
 	 */
-	open(obj) {
-		this.$el.css('height', this.$el.attr(this.options.dataMaxAttr) + 'px')
+	open(focusEl) {
+		this.$el.css('height', `${this.$el.attr(this.options.dataMaxAttr)}px`)
 			.attr('aria-hidden', false)
 			.removeClass(this.options.closeClass)
 			.addClass(this.options.openClass);
 
-		if (obj && obj.focusEl) {
-
+		if (focusEl) {
 			this.$el.on(transitionEndEvent(), () => {
-				obj.focusEl.focus();
+				focusEl.focus();
 				this.$el.off(transitionEndEvent());
 			});
 		}
 
-		Veams.Vent.trigger(Veams.EVENTS.toggler.open, {
-			context: this.options.context
-		});
-
 		if (this.options.setOverflow) {
-
 			this.$el.on(transitionEndEvent(), () => {
 				this.$el.css('overflow', 'visible');
 				this.$el.off(transitionEndEvent());
@@ -319,18 +291,17 @@ class Toggler extends VeamsComponent {
 		this.isOpen = true;
 	}
 
-
 	/**
 	 * Close current view element
 	 *
 	 * @public
 	 */
 	close() {
-		this.$el.css('height', 0)
-			.removeAttr('style')
-			.attr('aria-hidden', 'true')
-			.removeClass(this.options.openClass)
-			.addClass(this.options.closeClass);
+		this.$el.removeAttr('style')
+				.css('height', 0)
+				.attr('aria-hidden', true)
+				.removeClass(this.options.openClass)
+				.addClass(this.options.closeClass);
 
 		if (this.options.setOverflow) {
 			this.$el.css('overflow', 'hidden');
@@ -342,7 +313,6 @@ class Toggler extends VeamsComponent {
 
 		this.isOpen = false;
 	}
-
 
 	/**
 	 * calculateHeight class

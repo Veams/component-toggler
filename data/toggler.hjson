@@ -2,8 +2,7 @@
 	"variations": {
 		"default": {
 			"docs": {
-				"variationName": "Default",
-				"sectionCenter": true
+				"variationName": "Default"
 			},
 			"settings": {
 				"togglerContextClass": "default",

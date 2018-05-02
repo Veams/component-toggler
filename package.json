@@ -1,10 +1,10 @@
 {
-	"name": "veams-component-toggler",
-	"version": "5.1.0",
+	"name": "@veams/component-toggler",
+	"version": "1.0.0",
 	"description": "Represents a simple toggler with global event binding.",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/Veams/veams-component-toggler.git"
+		"url": "git://github.com/Veams/component-toggler.git"
 	},
 	"keywords": [
 		"veams"
@@ -12,7 +12,7 @@
 	"author": "Andy Gutsche",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/Veams/veams-component-toggler/issues"
+		"url": "https://github.com/Veams/component-toggler/issues"
 	},
-	"homepage": "https://github.com/Veams/veams-component-toggler#readme"
+	"homepage": "https://github.com/Veams/component-toggler#readme"
 }

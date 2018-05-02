@@ -1,12 +1,12 @@
 /* ===================================================
-Component: toggler
+Component: Toggler
 =================================================== */
 
 /* ---------------------------------------------------
 Global Variables
 --------------------------------------------------- */
-$toggler-animation-duration-std: 500ms;
-$toggler-animation-easing-std: ease-in-out;
+$toggler-animation-duration-std: 500ms !default;
+$toggler-animation-easing-std: ease-in-out !default;
 
 /* ---------------------------------------------------
 Global Styles

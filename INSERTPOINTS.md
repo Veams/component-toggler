@@ -1,6 +1,6 @@
 ## Usage
 
-### Include: Page
+### Include Snippet for Page
 
 ``` hbs
 {{! @INSERT :: START @id: toggler, @tag: component-partial }}
@@ -14,11 +14,24 @@
 
 ### Include: JavaScript
 
-#### Initializing in Veams V5
+#### Initializing with `@veams/plugin-modules`
 
 ``` js
-// @INSERT :: START @tag: js-init-v5 //
+// @INSERT :: START @tag: js-init-modules-@1 //
 	// Init Toggler
     Veams.modules.add({ namespace: 'toggler', module: Toggler });
+// @INSERT :: END
+```
+
+``` js
+// @INSERT :: START @tag: js-events //
+/**
+ * Events Toggler
+ */
+EVENTS.toggler = {
+	toggle: 'toggler:toggle',
+	open: 'toggler:open',
+	close: 'toggler:close'
+};
 // @INSERT :: END
 ```
